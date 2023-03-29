@@ -219,22 +219,38 @@ app.get('/update/:id', async function (req, resp) {
     }
 });
 
-//still working on this
-//update a post informaton and send it to the database
+//update a post information and send it to the database
 app.put('/update/:id', async function (req, resp) {
     try {
         //creates postId and sets it to the postID in the params
-        const postId = parseInt(req.params.postID);
+        const postId = parseInt(req.params.id);
         //sends the postId to the console
         console.log('params',req.params.id);
         //creates updatedPost and sets it to the body of the request
         const updatedPost = req.body;
         //sends the updatedPost to the console
         console.log('updatePost',updatedPost)
+        //creates query and sets it to the postID
+        const query = { postID: postId };
+        console.log('query',query);
+        //creates options and sets it to new: true
+        const options = { new: true };
         //creates result and sets it to the post in the database after finding it and updating it
-        const result = await postModel.findByIdAndUpdate(postId, updatedPost);
-        //redirects to the list page after updating
-        res.redirect('/list');
+        const result = await postModel.findOneAndUpdate(query, updatedPost,options);
+        console.log()
+
+        if (query==req.params.id) {
+            //redirects to the list page after updating
+            //creates posts and sets it to the posts in the database after finding them
+            const posts = await postModel.find().exec();
+            //creates query and sets it to the posts
+            const queries = { posts: posts };
+            //renders the list page as list.ejs
+            resp.render('list.ejs', queries);
+        } else {
+            //sends the error as a response
+            resp.status(404).send({ error: `postId and results-id do not match` });
+        }
     } catch (error) {
         //display the error
         console.log(error);
