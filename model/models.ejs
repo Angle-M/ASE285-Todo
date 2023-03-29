@@ -1,0 +1,35 @@
+const mongoose = require('mongoose');
+const todoSchema = new mongoose.Schema({
+    postID: {
+        type: String,
+        required: true,
+    },
+    title: {
+        type: String,
+        required: true,
+    },
+    date: {
+        type: String,
+        required: true,
+    }
+});
+
+const postModel = mongoose.model('Post', todoSchema);
+
+const counterschema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+    },
+    totalPost: {
+        type: Number,
+        required: true,
+    }
+});
+
+const counterModel = mongoose.model('Counter', counterschema);
+
+module.exports = {
+    postModel,
+    counterModel
+};
