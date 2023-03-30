@@ -138,36 +138,91 @@ app.delete('/delete', async function (req, resp) {
     try {
         //creates postId and sets it to the postID in the query
         const postId = parseInt(req.query.postID);
+
         //sends the postId to the console
         console.log(req.query.postID);
+
         //sends the postId to the console as an integer
         console.log(parseInt(req.query.postID));
+
         //creates deletedPost and finds it in the database and deletes it
         const deletedPost = await postModel.findOneAndDelete({ postID: postId });
 
+        //sends the deletedPost to the console
+        console.log('deletedPost',deletedPost);
+        
         if (!deletedPost) {
             //sends the error as a response
             return resp.status(404).send({ error: 'Post not found' });
         }
 
-        /*
-        const updatedCount = await totalPostModel.findOneAndUpdate(
+        // Reduce total post count
+        const updatedCount = await counterModel.findOneAndUpdate(
             { name: 'Total Post' },
-            { $inc: { count: -1 } },
+            { $inc: { counter: -1 } },
             { new: true }
         );
-        */
+        console.log('updatedCount', updatedCount);
+
+        // Get all remaining posts and update their postIDs
+        const remainingPosts = await postModel.find();
+        for (let i = 0; i < remainingPosts.length; i++) {
+            const post = remainingPosts[i];
+            await postModel.findByIdAndUpdate(
+                post._id,
+                { $set: { postID: i + 1 } },
+                { new: true }
+            );
+        }
+
         //sends a delete message to the console
         console.log(`Deleted post with ID: ${postId}`);
         //sends a delete message as a response
         resp.send({ message: 'Post deleted' });
-            } catch (error) {
-                //display the error
-                console.error('Delete error:', error.message);
-                //send the error as a response
-                resp.status(500).send({ error: 'Error deleting post' });
-            }
+    } catch (error) {
+        //display the error
+        console.error('Delete error:', error.message);
+        //send the error as a response
+        resp.status(500).send({ error: 'Error deleting post' });
+    }
 });
+
+
+/*
+async function reduce_post_count(new_total) {
+    try {
+        // Find the current total post count in the database
+        const counter = await counterModel.findOne({ name: 'Total Post' });
+
+        // Calculate the difference between the current and new total post count
+        const count_diff = counter.counter - new_total;
+
+        // If the new total is greater than the current count, return without updating
+        if (count_diff <= 0) {
+            return;
+        }
+
+        // Delete the excess posts with ids greater than the new total
+        await postModel.deleteMany({ id: { $gt: new_total } });
+
+        // Update the ids of the remaining posts
+        await postModel.updateMany(
+            { id: { $lte: new_total } },
+            { $inc: { id: -count_diff } }
+        );
+
+        // Update the total post count in the database
+        await counterModel.updateOne(
+            { name: 'Total Post' },
+            { $set: { counter: new_total } }
+        );
+    } catch (error) {
+        console.error('Reduce post count error:', error.message);
+        throw new Error('Error reducing post count');
+    }
+}
+*/
+
 
 //get the detail page by ID
 app.get('/detail/:id', async function (req, resp) {
@@ -239,7 +294,7 @@ app.put('/update/:id', async function (req, resp) {
         const result = await postModel.findOneAndUpdate(query, updatedPost,options);
         console.log()
 
-        if (query==req.params.id) {
+        if (result) {
             //redirects to the list page after updating
             //creates posts and sets it to the posts in the database after finding them
             const posts = await postModel.find().exec();
