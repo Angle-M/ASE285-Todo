@@ -188,42 +188,6 @@ app.delete('/delete', async function (req, resp) {
 });
 
 
-/*
-async function reduce_post_count(new_total) {
-    try {
-        // Find the current total post count in the database
-        const counter = await counterModel.findOne({ name: 'Total Post' });
-
-        // Calculate the difference between the current and new total post count
-        const count_diff = counter.counter - new_total;
-
-        // If the new total is greater than the current count, return without updating
-        if (count_diff <= 0) {
-            return;
-        }
-
-        // Delete the excess posts with ids greater than the new total
-        await postModel.deleteMany({ id: { $gt: new_total } });
-
-        // Update the ids of the remaining posts
-        await postModel.updateMany(
-            { id: { $lte: new_total } },
-            { $inc: { id: -count_diff } }
-        );
-
-        // Update the total post count in the database
-        await counterModel.updateOne(
-            { name: 'Total Post' },
-            { $set: { counter: new_total } }
-        );
-    } catch (error) {
-        console.error('Reduce post count error:', error.message);
-        throw new Error('Error reducing post count');
-    }
-}
-*/
-
-
 //get the detail page by ID
 app.get('/detail/:id', async function (req, resp) {
     try {
@@ -313,3 +277,4 @@ app.put('/update/:id', async function (req, resp) {
         resp.status(500).send({ error: 'Error updating post' });
     }
 });
+
