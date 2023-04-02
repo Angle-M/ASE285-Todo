@@ -84,7 +84,7 @@ async function runAddPost(req, resp) {
         //creates totalPost and sets it to the totalPost in the database
         const totalPost = counter.totalPost;
         //creates post and sets it to the postID, title, and date
-        const post = new postModel({ postID: totalPost + 1, title: req.body.title, date: req.body.date });
+        const post = new postModel({ postID: totalPost + 1, title: req.body.title, date: req.body.date, isCompleted: false});
         //saves the post
         await post.save();
         //adds 1 to the totalPost
@@ -159,7 +159,7 @@ app.delete('/delete', async function (req, resp) {
         // Reduce total post count
         const updatedCount = await counterModel.findOneAndUpdate(
             { name: 'Total Post' },
-            { $inc: { counter: -1 } },
+            { $inc: { totalPost: -1 } },
             { new: true }
         );
         console.log('updatedCount', updatedCount);
@@ -271,6 +271,36 @@ app.get('/update/:id', async function (req, resp) {
         console.log(error);
         //send the error as a response
         resp.status(500).send({ error: 'Error from Post.findOne()' });
+    }
+});
+
+app.put('/completed/:id', async function (req, resp) {
+    try {
+        console.log(req.body);
+        //creates postId and sets it to the postID in the query
+        const postId = parseInt(req.params.id);
+        const query = { postID: postId };
+        const markComplete = {
+            isCompleted: true
+        };
+        //creates post and sets it to the post in the database after finding it
+        const post = await postModel.findOneAndUpdate(query, { $set: markComplete}).exec();
+        console.log(post);
+
+        //checks if the post is completed
+        if (markComplete.isCompleted) {
+            //marks the postID as completed
+            console.log(`app.put.isCompleted: Updated post to completed ${markComplete}`);
+            resp.status(200).send({ messafe: `Post ${postId} marked as completed`});
+        } else {
+            //sends the error as a response
+            resp.status(404).send({ error: `Unble to mark completed. ${postId}` });
+        }
+    } catch (error) {
+        //display the error
+        console.log(error);
+        //send the error as a response
+        resp.status(500).send({ error: 'Error from Post.findOne() and update' });
     }
 });
 

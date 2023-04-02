@@ -23,11 +23,14 @@
           </h4>
           <p> Date : <%= posts[i].date %>
           </p>
+          <p> Is Completed : <%= posts[i].isCompleted %>
+          </p>
           <p> ID : <%= posts[i].postID %>
           </p>
           <button class="detail" data-id="<%= posts[i].postID%>">Detail</button>
           <button class="edit" data-id="<%= posts[i].postID%>">Edit</button>
           <button class="delete" data-id="<%= posts[i].postID %>">Delete</button>
+          <button class="completed" data-id="<%= posts[i].postID %>">Mark Complete</button>
         </li>
         <% } %>
     </ul>
@@ -72,6 +75,24 @@
         window.location.href = `/update/${postId}`;
       });
     });
+    </script>
+    <script>
+      $('.completed').click(function (e) {
+        console.log(e.target.dataset.id);
+        $.ajax({
+          method: 'PUT',
+          url: `/completed/${e.target.dataset.id}`,
+          contentType: 'application/json',
+          data:JSON.stringify({test: true}),
+          success: function (result){
+            location.reload(); // refresh the page
+          },
+          error: function(xhr,code,err){ // refresh the page
+            console.error(err);
+          }
+          // failure
+        });
+      });    
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
