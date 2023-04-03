@@ -1,0 +1,56 @@
+<!-- categories.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Post</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZEK6mfwNtXnGkLNIbwwp/" crossorigin="anonymous">
+</head>
+<body>
+    <%- include('nav.ejs') %>
+    <div class="container">
+        <h1 class="my-4">Update Category</h1>
+        <h1 class="my-4">Post ID: <%= data.postID %></h1>
+            <div class="alert alert-danger" role="alert">
+            </div>
+            <form action="/update/${data.postID}" method="POST">
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="dropdown" class="form-control" name="category" />
+                </div>
+            <button type="button" class="update" data-post-id="<%= data.postID%>">update</button>
+        </form>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script>
+        $('.update').click(function (e) {
+            e.preventDefault();
+            const postId = e.target.dataset.postId;
+            const updateCategory = {
+                category: $('#category').val()
+            };
+            $.ajax({
+                method: 'PUT',
+                url: `/categories/${postId}`,
+                // dataset.id is from: data-id= posts[i]._id 
+                data: updatePost
+            }).done((res) => {
+                window.location.href = `/list`; // refresh the page
+            }).fail((xhr, code, err) => {
+              // failure
+            });
+        });  
+    </script>
+</body>
+</html>

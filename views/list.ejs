@@ -27,10 +27,13 @@
           </p>
           <p> ID : <%= posts[i].postID %>
           </p>
+          <p> Category : <%= posts[i].category %>
+          </p>
           <button class="detail" data-id="<%= posts[i].postID%>">Detail</button>
           <button class="edit" data-id="<%= posts[i].postID%>">Edit</button>
           <button class="delete" data-id="<%= posts[i].postID %>">Delete</button>
           <button class="completed" data-id="<%= posts[i].postID %>">Mark Complete</button>
+          <button class="category" data-id="<%= posts[i].postID %>">Category</button>
         </li>
         <% } %>
     </ul>

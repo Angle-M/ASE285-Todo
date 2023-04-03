@@ -84,7 +84,7 @@ async function runAddPost(req, resp) {
         //creates totalPost and sets it to the totalPost in the database
         const totalPost = counter.totalPost;
         //creates post and sets it to the postID, title, and date
-        const post = new postModel({ postID: totalPost + 1, title: req.body.title, date: req.body.date, isCompleted: false});
+        const post = new postModel({ postID: totalPost + 1, title: req.body.title, date: req.body.date, isCompleted: false, category: req.body.category});
         //saves the post
         await post.save();
         //adds 1 to the totalPost
@@ -308,3 +308,66 @@ app.put('/update/:id', async function (req, resp) {
     }
 });
 
+app.get('/categories/:id', async function (req, resp) {
+    try {
+        //creates postId and sets it to the postID in the params
+        const postId = (req.params.id);
+        //creates post and sets it to the post in the database after finding it
+        const post = await postModel.findOne({ postID: postId }).exec();
+        //checks if the post exists
+        if (post) {
+            //renders the update page as update.ejs with the post data
+            resp.render('categories.ejs', { data: post });
+            //sends the postId to the console
+            console.log(`app.get.categories: Found post with id ${postId}`);
+        } else {
+            //sends the error as a response
+            resp.status(404).send({ error: `Post with id ${postId} not found.` });
+        }
+    } catch (error) {
+        //display the error
+        console.log(error);
+        //send the error as a response
+        resp.status(500).send({ error: 'Error from Post.findOne()' });
+    }
+});
+
+//update a post information and send it to the database
+app.put('/categories/:id', async function (req, resp) {
+    try {
+        //creates postId and sets it to the postID in the params
+        const postId = parseInt(req.params.id);
+        //sends the postId to the console
+        console.log('params',req.params.id);
+        //creates updatedPost and sets it to the body of the request
+        const updatedPost = req.body;
+        //sends the updatedPost to the console
+        console.log('updatePost',updatedPost)
+        //creates query and sets it to the postID
+        const query = { postID: postId };
+        console.log('query',query);
+        //creates options and sets it to new: true
+        const options = { new: true };
+        //creates result and sets it to the post in the database after finding it and updating it
+        const result = await postModel.findOneAndUpdate(query, updatedPost,options);
+        console.log()
+
+        if (result) {
+            //redirects to the list page after updating
+            //creates posts and sets it to the posts in the database after finding them
+            const posts = await postModel.find().exec();
+            //creates query and sets it to the posts
+            const queries = { posts: posts };
+            //renders the list page as list.ejs
+            resp.render('list.ejs', queries);
+        } else {
+            //sends the error as a response
+            resp.status(404).send({ error: `postId and results-id do not match` });
+        }
+    } catch (error) {
+        //display the error
+        console.log(error);
+        //send the error as a response
+        resp.status(500).send({ error: 'Error updating post' });
+    }
+});
