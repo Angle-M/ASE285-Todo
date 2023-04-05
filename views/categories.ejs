@@ -11,17 +11,9 @@
 <body>
     <%- include('nav.ejs') %>
     <div class="container">
-        <h1 class="my-4">Update Category</h1>
+        <h1 class="my-4">Categories</h1>
         <h1 class="my-4">Post ID: <%= data.postID %></h1>
-            <div class="alert alert-danger" role="alert">
-            </div>
-            <form action="/update/${data.postID}" method="POST">
-                <div class="form-group">
-                    <label>Category</label>
-                    <input type="dropdown" class="form-control" name="category" />
-                </div>
-            <button type="button" class="update" data-post-id="<%= data.postID%>">update</button>
-        </form>
+        <h1 class="my-4">Category: <%= data.category %></h1>
     </div>
 
     <!-- Optional JavaScript -->
