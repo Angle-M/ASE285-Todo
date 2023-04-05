@@ -6,15 +6,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Post</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZEK6mfwNtXnGkLNIbwwp/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
 </head>
 <body>
     <%- include('nav.ejs') %>
     <div class="container">
-        <h1 class="my-4">Categories</h1>
+        <h1 class="my-4">Change Categories</h1>
         <h1 class="my-4">Post ID: <%= data.postID %></h1>
         <h1 class="my-4">Category: <%= data.category %></h1>
     </div>
+    <form action="/categories/${data.postID}" method="POST">
+            <div class="form-group">
+                <label>Category</label>
+                <select type="dropdown" class="form-control" name="category" id="category" >
+                    <option value="home">Home</option>
+                    <option value="work">Work</option>
+                    <option value="school">School</option>
+                    <option value="personal">Personal</option>
+                </select>
+        </div>
+        <button type="button" class="categories" data-post-id="<%= data.postID%>">category update</button>
+    </form>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -25,18 +38,18 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
-    <script>
-        $('.update').click(function (e) {
+    <script> 
+        $('.categories').click(function (e) {
             e.preventDefault();
             const postId = e.target.dataset.postId;
             const updateCategory = {
-                category: $('#category').val()
+                category: $('#category').val(),
             };
             $.ajax({
                 method: 'PUT',
                 url: `/categories/${postId}`,
                 // dataset.id is from: data-id= posts[i]._id 
-                data: updatePost
+                data: updateCategory
             }).done((res) => {
                 window.location.href = `/list`; // refresh the page
             }).fail((xhr, code, err) => {

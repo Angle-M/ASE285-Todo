@@ -342,7 +342,7 @@ app.put('/categories/:id', async function (req, resp) {
         //creates updatedPost and sets it to the body of the request
         const updatedPost = req.body;
         //sends the updatedPost to the console
-        console.log('updatePost',updatedPost)
+        console.log('updatecategory',updatedPost)
         //creates query and sets it to the postID
         const query = { postID: postId };
         console.log('query',query);
