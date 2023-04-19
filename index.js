@@ -238,6 +238,7 @@ app.get('/update/:id', async function (req, resp) {
     }
 });
 
+//completion indicator next to a post
 app.put('/completed/:id', async function (req, resp) {
     try {
         console.log(req.body);
@@ -265,6 +266,23 @@ app.put('/completed/:id', async function (req, resp) {
         console.log(error);
         //send the error as a response
         resp.status(500).send({ error: 'Error from Post.findOne() and update' });
+    }
+});
+
+//gets the amount of completed posts
+app.get('/completed', async function (req, resp) {
+    try {
+        //create posts and sets it to the posts in the database after finding them
+        const posts = await postModel.find({ isCompleted: true }).exec();
+        //creates query and sets it to the posts
+        const queries = { posts: posts };
+        //renders the list page as list.ejs
+        resp.render('complete.ejs', queries);
+    } catch (error) {
+        //display the error
+        console.log(error);
+        //send the error as a response
+        resp.status(500).send({ error: 'Error from Post.find()' });
     }
 });
 
