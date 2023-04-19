@@ -389,3 +389,34 @@ app.put('/categories/:id', async function (req, resp) {
         resp.status(500).send({ error: 'Error updating post' });
     }
 });
+
+app.delete('/deleteall', async function (req, resp) {
+    try {
+        //creates posts and sets it to the posts in the database after finding them
+        const posts = await postModel.find().exec();
+        //checks if the posts exist
+        if (posts) {
+            //deletes all posts from the database
+            await postModel.deleteMany();
+            //sends the message to the console
+            console.log(`app.delete.deleteAll: Deleted all posts`);
+            const updatedCount = await counterModel.findOneAndUpdate(
+                { name: 'Total Post' },
+                { $set: { totalPost: -posts.length } },
+                { new: true }
+            );
+            //redirects to the list page after deleting
+            resp.redirect('/list');
+        } else {
+            //sends the error as a response
+            resp.status(404).send({ error: `No posts found` });
+        }
+    } catch (error) {
+        //display the error
+        console.log(error);
+        //send the error as a response
+        resp.status(500).send({ error: 'Error deleting all posts' });
+    }
+
+ 
+});

@@ -15,6 +15,25 @@
       <li class="nav-item active">
         <a class="nav-link" href="/completed">Completed Items <span class="sr-only">(current)</span></a>
       </li>
+      <li class="nav-item active">
+        <button class="deleteall" href="/deleteall">Delete All <span class="sr-only">(current)</span></button>
+      </li>
     </ul>
   </div>
 </nav>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+      $('.deleteall').click(function (e) {
+        console.log(e.target.dataset.id);
+        $.ajax({
+          method: 'DELETE',
+          url: `/deleteall`,
+          data:{test:true}
+        }).done((res) => {
+          $(this).parent('li').fadeOut();
+          location.reload(); // refresh the page
+        }).fail((xhr, code, err) => {
+          // failure
+        });
+      });    
+</script>
