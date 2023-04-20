@@ -402,7 +402,7 @@ app.delete('/deleteall', async function (req, resp) {
             console.log(`app.delete.deleteAll: Deleted all posts`);
             const updatedCount = await counterModel.findOneAndUpdate(
                 { name: 'Total Post' },
-                { $set: { totalPost: -posts.length } },
+                { $set: { totalPost: 0 } },
                 { new: true }
             );
             //redirects to the list page after deleting
@@ -417,6 +417,4 @@ app.delete('/deleteall', async function (req, resp) {
         //send the error as a response
         resp.status(500).send({ error: 'Error deleting all posts' });
     }
-
- 
 });

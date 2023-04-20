@@ -30,7 +30,6 @@
           url: `/deleteall`,
           data:{test:true}
         }).done((res) => {
-          $(this).parent('li').fadeOut();
           location.reload(); // refresh the page
         }).fail((xhr, code, err) => {
           // failure
